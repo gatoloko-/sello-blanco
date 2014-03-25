@@ -1,0 +1,20 @@
+html, body {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height: 100%;
+	text-align:center;
+
+}
+#main{
+	width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+	border: 1px solid #000;
+}
+#query-product{
+	display: none;
+	width: 600px;
+	height: 600px;
+	text-align:left;
+}
