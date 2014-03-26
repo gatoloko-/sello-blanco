@@ -1,16 +1,16 @@
 <?php
 
-$description = $_POST['description'];
-$price = $_POST['price'];
-function altProduct($description, $price){
-	include_once 'conx/conx.php';
-	$oProducto = $conx->query('CALL oProduct("'.$id.'")');//consulta
+function altProduct($description){
+	
+	include 'conx/conx.php';
+	$producto = $conx->query('CALL oProducts("'.$description.'")');//consulta
 
-	while ($oResultado = $oProducto->fetch_assoc()) {
-		return $oResultado;
-		}
+	$resultado = $producto->fetch_array(MYSQLI_NUM);
+	
+	return $resultado;
 }
 
+/*
 $data = altProduct($price, $description);//si producto esta con stock 0
 if (isset($data)) {
 	foreach ($data as $key => $value) {
@@ -21,5 +21,5 @@ if (isset($data)) {
 	echo "Producto no encontrado. Por favor revise el código ingresado.";
 }
 
-
+*/
 ?>
