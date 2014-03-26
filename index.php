@@ -132,16 +132,16 @@
 						    <td colspan="2" class="error-message"></td>
 						  </tr> 
 						  <tr>
-						    <td><strong>Codigo: </strong></td>
-						    <td><div id="returned-code"></div></td>
+						    <td><strong>Codigo: </div></strong></td>
+						    <td><div id="returned-code"></td>
 						  </tr>
 						  <tr>
-						    <td><strong>Descripcion: </strong></td>
-						    <td><div id="returned-description"></div></td>
+						    <td><strong>Descripcion: </div></strong></td>
+						    <td><div id="returned-description"></td>
 						  </tr>
 						  <tr>
-						    <td><strong>Precio:  </strong></td>
-						    <td><div id="returned-precio"></div></td>
+						    <td><strong>Precio:  </div></strong></td>
+						    <td><div id="returned-precio"></td>
 						  </tr>
 						  <tr>
 						    <td><strong>Stock:  </strong></td>
@@ -172,7 +172,7 @@
 						    
 						  </tr> 
 					</table>
-			<div id="optionalProducts">-</div>
+			<div id="result"></div>
 		</div>
 		<script>
 		
@@ -189,13 +189,12 @@
 			$("#returned-description").append( resArray[1] );
 			$("#returned-precio").append( resArray[3] );
 			if(resArray[2] == 0){
-				$("#returned-stock").append("<span style='color: #ff0000;'>Este producto esta agotado</span>");
-				$("#optionalProducts").append( resArray[4] );
+				$("#returned-stock").append("<span style='color: #ff0000;'>Este producto esta agotado</span>" + resArray[4]);
 			}else{
 				$("#returned-stock").append( resArray[2] );
 			}
 			if(resArray[2] != 0){
-			$("#insert-button").show():
+			$("#insert-button").show();
 			}
 			//$("#insert-button-div").append( "<button id='insert-button' onclick='insertProduct(actualRow);'>Agregar producto</button>" );
 			
@@ -209,9 +208,7 @@
 			$("#returned-precio").empty();
 			$("#returned-stock").empty();
 			$("#insert-button-div").empty();
-			
 		}
-		
 		$( "#query-product-form" ).submit(function( event ) {
  
 		  // Stop form from submitting normally
@@ -228,7 +225,7 @@
 		  // Put the results in a div
 		  posting.done(function( data ) {
 		  	
-		  	if (data == "Producto no encontrado. Por favor revise el c�digo ingresado.") {
+		  	if (data == "Producto no encontrado. Por favor revise el cdigo ingresado.") {
 		  		errorResponse()
 		  	} else{
 		  		var resultado = data
@@ -237,8 +234,5 @@
 		  	};
 		  });
 		});
-		
-		
 		</script>
 	</body>
-</html>
