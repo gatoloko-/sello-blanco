@@ -41,7 +41,7 @@
 		function qProduct(){
 			actualRow = $(document.activeElement).attr('id');
 			alert(actualRow);
-			$( "#query-product" ).dialog({ autoOpen: false, width: 800, modal: true });
+			$( "#query-product" ).dialog({ autoOpen: false, width: 800, modal: true, position: { my: "center top", at: "center top", of: window } });
 			$( "#query-product" ).dialog( "open" );
 			
 		}
@@ -71,6 +71,19 @@
 		    	}
 			
 	    	}
+	    </script>
+	    
+	    <script>
+	    	window.onbeforeunload = function (event) {
+			  var message = 'Esta seguro de que desea cerrar la pagina?';
+			  if (typeof event == 'undefined') {
+			    event = window.event;
+			  }
+			  if (event) {
+			    event.returnValue = message;
+			  }
+			  return message;
+			}
 	    </script>
 	</head>
 
@@ -173,6 +186,7 @@
 						  </tr> 
 					</table>
 			<div id="result"></div>
+			<div id="optional-products-container"></div>
 		</div>
 		<script>
 		
@@ -183,31 +197,84 @@
 			$("#returned-precio").empty();
 			$("#returned-stock").empty();
 			$("#insert-button").hide();
+			$("#optional-products-container").empty();
 			//$("#insert-button-div").empty();
 			
 			$("#returned-code").append( resArray[0] );
 			$("#returned-description").append( resArray[1] );
 			$("#returned-precio").append( resArray[3] );
 			if(resArray[2] == 0){
-				$("#returned-stock").append("<span style='color: #ff0000;'>Este producto esta agotado</span>" + resArray[4]);
+				$("#returned-stock").append("<span style='color: #ff0000;'>Este producto esta agotado</span>");
+				for (var i=0; i <= 22; i++) {
+				  if (typeof resArray[i] == 'undefined'|| resArray[i] == "") { 
+				  	resArray[i] = "";
+				  	}
+				};
+				$("#optional-products-container").append(
+					"<table>\
+					<tr>\
+						<td colspan='2'>\
+						<div align='center'><strong>PRODUCTOS SUGERIDOS</strong><br/></div>\
+						</td>\
+					</tr>\
+					<tr>\
+						<td><strong>Codigo</strong></td>\
+						<td><strong>Descripcion</strong></td>\
+						<td><strong>Stock</strong></td>\
+						<td><strong>Precio</strong></td>\
+					</tr>\
+					<tr >\
+						<td width='150'>" + resArray[4] + "</td>\
+						<td width='400'>" + resArray[5] + "</td>\
+						<td>" + resArray[6] + "</td>\
+						<td>" + resArray[7] + "</td>\
+					</tr>\
+					<tr >\
+						<td>" + resArray[8] + "</td>\
+						<td>" + resArray[9] + "</td>\
+						<td>" + resArray[10] +"</td>\
+						<td>" + resArray[11] + "</td>\
+					</tr>\
+					<tr>\
+						<td>" + resArray[12] + "</td>\
+						<td>" + resArray[13] + "</td>\
+						<td>" + resArray[14] + "</td>\
+						<td>" + resArray[15] + "</td>\
+					</tr>\
+					<tr>\
+						<td>" + resArray[16] + "</td>\
+						<td>" + resArray[17] + "</td>\
+						<td>" + resArray[18] + "</td>\
+						<td>" + resArray[18] + "</td>\
+					</tr>\
+					<tr>\
+						<td>" + resArray[19] + "</td>\
+						<td>" + resArray[20] + "</td>\
+						<td>" + resArray[21] + "</td>\
+						<td>" + resArray[22] + "</td>\
+					</tr>\
+				</table>"
+				);
 			}else{
 				$("#returned-stock").append( resArray[2] );
 			}
-			if(resArray[2] != 0){
+			if(resArray[2] != "0" && resArray[2] != 'undefined'){
 			$("#insert-button").show();
 			}
+			
 			//$("#insert-button-div").append( "<button id='insert-button' onclick='insertProduct(actualRow);'>Agregar producto</button>" );
 			
 			
 		}
 		function errorResponse (){
 			$(".error-message").empty();
-			$(".error-message").append("Producto no encontrado. Por favor revise el código ingresado.");
+			$(".error-message").append("<span style='color: red;'>Producto no encontrado. Por favor revise el código ingresado.</span>");
 			$("#returned-code").empty();
 			$("#returned-description").empty();
 			$("#returned-precio").empty();
 			$("#returned-stock").empty();
-			$("#insert-button-div").empty();
+			$("#insert-button").hide();
+			$("#optional-products-container").empty();
 		}
 		$( "#query-product-form" ).submit(function( event ) {
  
@@ -225,7 +292,7 @@
 		  // Put the results in a div
 		  posting.done(function( data ) {
 		  	
-		  	if (data == "Producto no encontrado. Por favor revise el cdigo ingresado.") {
+		  	if (data == "1111") {
 		  		errorResponse()
 		  	} else{
 		  		var resultado = data

@@ -1,13 +1,23 @@
 <?php
 
+function resultToArray($result) {
+    $rows = array();
+    while($row = $result->fetch_row()) {
+        $rows[] = $row;
+    }
+    return $rows;
+}
+
 function altProduct($description){
 	
 	include 'conx/conx.php';
 	$producto = $conx->query('CALL oProducts("'.$description.'")');//consulta
-
-	$resultado = $producto->fetch_array(MYSQLI_NUM);
 	
-	return $resultado;
+	$array = resultToArray($producto);	
+	return $array;
+	
+	
+
 }
 
 /*

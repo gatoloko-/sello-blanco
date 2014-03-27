@@ -9,14 +9,22 @@ function qPro($id){
 	include_once 'conx/conx.php';
 	$producto = $conx->query('CALL qProduct("'.$id.'")');//consulta
 	$resultado = $producto->fetch_array(MYSQLI_NUM);
-	if ($resultado[2] == 0) {
+	if (isset($resultado[2])) {
+		if ($resultado[2] == 0) {
 		$resultado_ = altProduct($resultado[1]);
-		$resultado = array_merge($resultado, $resultado_);
-	} 
+		for ($i=0; $i <= 1 ; $i++) {
+				 
+			for ($ii=0; $ii <= 3; $ii++) { 
+				array_push($resultado, $resultado_[$i][$ii]);
+			}
+		}
+	}
+		
+	}
+	
 	
 	while ($resultado) {
 		return $resultado;
-		echo $resultado[2];
 		}
 	}	
 
@@ -29,7 +37,7 @@ if (isset($data)) {
 }
 	
 } else {
-	echo "Producto no encontrado. Por favor revise el código ingresado.";
+	echo "1111";
 }
 
 
