@@ -45,6 +45,11 @@
 			$( "#query-product" ).dialog( "open" );
 			
 		}
+		function qClient(){
+			$( "#query-client" ).dialog({ autoOpen: false, width: 800, modal: true, position: { my: "center top", at: "center top", of: window } });
+			$( "#query-client" ).dialog( "open" );
+			
+		}
 		</script>
 		
 		<script>
@@ -92,10 +97,31 @@
         <form>
 			<table border="0" cellspacing="5" cellpadding="5">
 			  <tr>
-			    <td colspan="5">&nbsp;</td>
+			    <td colspan="5">
+			    	<table>
+			    		<tr>
+			    			<td>R.U.T.</td>
+			    			<td><input type="text" id="rut" name="rut" onclick="qClient();"/></td>
+			    			<td>Razón Social</td>
+			    			<td><input type="text" id="rs" name="rs" /></td>			    			
+			    		</tr>
+			    		<tr>
+			    			<td>Dirección</td>
+			    			<td><input type="text" id="dir" name="dir" /></td>
+			    			<td>Ciudad</td>
+			    			<td><input type="text" id="ciudad" name="ciudad" /></td>			    			
+			    		</tr>
+			    		<tr>
+			    			<td>Teléfono</td>
+			    			<td><input type="text" id="tel" name="tel" /></td>
+			    			<td>Vendedor</td>
+			    			<td><input type="text" id="ven" name="ven" /></td>			    			
+			    		</tr>
+			    	</table>
+				</td>
 			  </tr>
 			  <tr>
-			    <td colspan="5">&nbsp;</td>
+			    <td colspan="5"></td>
 			    </tr>
 			  <tr>
 			    <td colspan="5">
@@ -109,7 +135,8 @@
 			        <td><input name="tot1" type="text" id="tot1" size="10" disabled=""></td>
 			        
 			      </tr>
-			    </table></td>
+			    </table>
+			    </td>
 			  </tr>
 			  <tr>
 			    <td>&nbsp;</td>
@@ -127,7 +154,87 @@
 			  </tr>
 			</table>
 	</form>
-		</div>
+	<div id="query-client">
+			    		<table>
+			    			<tr>
+			    				<form id="query-client-form" action="query-client.php">
+			    					<input type="text" id="crut" name="crut" />
+			    					<button>Consultar</button>
+			    				</form>
+			    				<div id="insert-client-div" style="display: none;"><button>Seleccionar Cliente</button></div>
+			    				<div id="query-client-response"></div>
+			    				
+			    			</tr>
+			    			
+			    		</table>
+			    	</div>
+</div><!-- Main end-->
+<script>
+	function apClient(resArrayClient){
+		$("#query-client-response").empty();
+		$("#query-client-response").append(
+			"<table>\
+				<tr>\
+					<td>RUT</td>\
+					<td>"+ resArrayClient[0] +"</td>\
+				</tr>\
+				<tr>\
+					<td>RUT</td>\
+					<td>"+ resArrayClient[1] +"</td>\
+				</tr>\
+				<tr>\
+					<td>RUT</td>\
+					<td>"+ resArrayClient[2] +"</td>\
+				</tr>\
+				<tr>\
+					<td>RUT</td>\
+					<td>"+ resArrayClient[3] +"</td>\
+				</tr>\
+				<tr>\
+					<td>RUT</td>\
+					<td>"+ resArrayClient[4] +"</td>\
+				</tr>\
+				<tr>\
+					<td>RUT</td>\
+					<td>"+ resArrayClient[5] +"</td>\
+				</tr>\
+			</table>"
+		);
+	}
+	
+	function errorResponseClient(){
+		$("query-client-response").empty();
+		$("#insert-client-div").hide();
+		$("query-client-response").append('Cliente no encontrado. Por favor revise el RUT ingresado.');
+	}
+	
+	/////post code
+		$( "#query-client-form" ).submit(function( event ) {
+		
+		  // Stop form from submitting normally
+		  event.preventDefault();
+		  // Get some values from elements on the page:
+		  var $form = $( this ),
+		    term = $form.find( "input[name='crut']" ).val(),
+		    url = $form.attr( "action" );
+		 
+		  // Send the data using post
+		  var posting = $.post( url, { crut: term } );
+		 
+		  // Put the results in a div
+		  posting.done(function( data ) {
+		  	
+		  	if (data == "0000") {
+		  		errorResponseClient()
+		  	} else{
+		  		var resultadoClient = data
+		  		var resArrayClient = resultadoClient.split("|")
+		  		apClient(resArrayClient)
+		  	};
+		  });
+		});
+		//////////post code
+	</script>
 		<div id="query-product" >
 			<table border="0" cellpadding="5" cellspacing="5">
 				  <tr>
@@ -137,8 +244,9 @@
 				    <td>Codigo</td>
 				    <td>
 				    <form id="query-product-form" action="query-product.php">
-				      <input type="text" name="product" id="product"><button id="check"  name="check">Consultar</button>
-				      </form>
+					      <input type="text" name="product" id="product">
+					      <button id="check"  name="check">Consultar</button>
+				     </form>
 				      </td><br/>
 						  </tr>
 						  <tr>
@@ -210,6 +318,11 @@
 				  	resArray[i] = "";
 				  	}
 				};
+				if (resArray[4]=="") {
+					$("#optional-products-container").append("<div align='center'><strong>NO HAY PRODUCTOS SUGERIDOS</strong><br/></div>");
+				} else{
+					
+				
 				$("#optional-products-container").append(
 					"<table>\
 					<tr>\
@@ -255,6 +368,7 @@
 					</tr>\
 				</table>"
 				);
+				};
 			}else{
 				$("#returned-stock").append( resArray[2] );
 			}

@@ -19,3 +19,10 @@ html, body {
 	text-align:left;
 	overflow: auto;
 }
+#query-client{
+	display: none;
+	width: 600px;
+	height: 600px;
+	text-align:left;
+	overflow: auto;
+}

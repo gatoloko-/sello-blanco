@@ -1,6 +1,6 @@
 <?php
 
-$rut = $_GET['client-rut'];
+$rut = $_POST['crut'];
 
 
 function qClient($rut){
@@ -15,7 +15,7 @@ function qClient($rut){
 
 	
 $data = qClient($rut);//si producto esta con stock 0
-
+	
 	if ($data[0]!="") {
 		foreach ($data as $key => $value) {
 		echo utf8_encode($value)."|";
@@ -23,6 +23,9 @@ $data = qClient($rut);//si producto esta con stock 0
 	} else {
 		echo utf8_encode("0000");
 	}
+	
+	
+
 
 
 ?>

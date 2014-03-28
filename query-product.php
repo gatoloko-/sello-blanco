@@ -12,12 +12,15 @@ function qPro($id){
 	if (isset($resultado[2])) {
 		if ($resultado[2] == 0) {
 		$resultado_ = altProduct($resultado[1]);
-		for ($i=0; $i <= 1 ; $i++) {
-				 
-			for ($ii=0; $ii <= 3; $ii++) { 
-				array_push($resultado, $resultado_[$i][$ii]);
+		if (isset($resultado_[1])) {
+				for ($i=0; $i <= 1 ; $i++) {
+					 
+				for ($ii=0; $ii <= 3; $ii++) { 
+					array_push($resultado, $resultado_[$i][$ii]);
+				}
 			}
 		}
+		
 	}
 		
 	}
