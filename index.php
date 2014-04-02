@@ -11,8 +11,6 @@
 		<meta name="description" content="">
 		<meta name="author" content="gatoloko">
 
-		<meta name="viewport" content="width=device-width; initial-scale=1.0">
-
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -29,7 +27,7 @@
 					function () {
 						if (next<=100) {
 							next = ++next;
-					  $('#products').append('<tr><td height="30"><input name="'+next+'" type="text" id="'+next+'" size="15" onclick="qProduct();"></td><td><input name="des'+next+'" type="text" id="des'+next+'" size="30"></td><td><input name="pre'+next+'" type="text" id="pre'+next+'" size="5"></td><td><input name="can'+next+'" type="text" id="can'+next+'" size="5" onfocus="setActualCan();" onfocusout="calculateTotal();"></td><td><input name="tot'+next+'" type="text" id="tot'+next+'" size="10" disabled=""></td></tr>');
+					  $('#products').append('<tr><td height="30"><input name="'+next+'" type="text" id="'+next+'" size="15" onclick="qProduct();"></td><td><input name="des'+next+'" type="text" id="des'+next+'" size="30"></td><td><input name="pre'+next+'" type="text" id="pre'+next+'" size="5"></td><td><input name="can'+next+'" type="text" id="can'+next+'" size="5" onfocus="setActualCan();" onfocusout="calculateTotal();"></td><td><input name="tot'+next+'" type="text" id="tot'+next+'" size="10" disabled="" onchange="upGTotal();"></td></tr>');
 
 						} else{};
 											}
@@ -50,8 +48,20 @@
 			$( "#query-client" ).dialog( "open" );
 			
 		}
-		</script>
 		
+		</script>
+		<script>
+	    	function upGTotal(next){
+	    		var totalFactura = 0;
+	    		for (var i=1; i =< next; i++) {
+	    			
+					totalFactura = totalFactura + $("#tot" + next).val();
+				};
+				
+				$("#gTotal").val = totalFactura;
+				
+	    	}
+	    </script>
 		<script>
 			var actualRowTotal;
 			function setActualCan(){
@@ -59,7 +69,7 @@
 				    		actualRowTotal = actualRowTotal.substring(3,6);
 				    		
 			        	}
-		
+			
 			function calculateTotal(){
 				
 	    		
@@ -72,10 +82,12 @@
 			    		var precio = $("#pre" + actualRowTotal).val();
 			    		var total = parseInt(cantidad) * parseInt(precio);
 			    		$("#can" + actualRowTotal).change($('#tot' + actualRowTotal).val(total));
+			    		upGTotal(next);
 			    	}
 		    	}
 			
 	    	}
+	    	
 	    </script>
 	    
 	    <script>
@@ -96,46 +108,45 @@
 		<div id="main">
         <form>
 			<table border="0" cellspacing="5" cellpadding="5">
+				<tr>
+				    <td colspan="5">
+				    	<table>
+				    		<tr>
+				    			<td>R.U.T.</td>
+				    			<td><input type="text" id="rut" name="rut" onclick="qClient();"/></td>
+				    			<td>Razón Social</td>
+				    			<td><input type="text" id="rs" name="rs" /></td>			    			
+				    		</tr>
+				    		<tr>
+				    			<td>Dirección</td>
+				    			<td><input type="text" id="dir" name="dir" /></td>
+				    			<td>Ciudad</td>
+				    			<td><input type="text" id="ciudad" name="ciudad" /></td>			    			
+				    		</tr>
+				    		<tr>
+				    			<td>Teléfono</td>
+				    			<td><input type="text" id="tel" name="tel" /></td>
+				    			<td>Vendedor</td>
+				    			<td><input type="text" id="ven" name="ven" /></td>			    			
+				    		</tr>
+				    	</table>
+					</td>
+			  	</tr>
 			  <tr>
-			    <td colspan="5">
-			    	<table>
-			    		<tr>
-			    			<td>R.U.T.</td>
-			    			<td><input type="text" id="rut" name="rut" onclick="qClient();"/></td>
-			    			<td>Razón Social</td>
-			    			<td><input type="text" id="rs" name="rs" /></td>			    			
-			    		</tr>
-			    		<tr>
-			    			<td>Dirección</td>
-			    			<td><input type="text" id="dir" name="dir" /></td>
-			    			<td>Ciudad</td>
-			    			<td><input type="text" id="ciudad" name="ciudad" /></td>			    			
-			    		</tr>
-			    		<tr>
-			    			<td>Teléfono</td>
-			    			<td><input type="text" id="tel" name="tel" /></td>
-			    			<td>Vendedor</td>
-			    			<td><input type="text" id="ven" name="ven" /></td>			    			
-			    		</tr>
-			    	</table>
-				</td>
+			  	<td colspan="5"></td>
 			  </tr>
 			  <tr>
-			    <td colspan="5"></td>
-			    </tr>
-			  <tr>
-			    <td colspan="5">
-			    	
-			    <table id="products" border="0" cellspacing="5" cellpadding="5">
-			      <tr>
-			        <td height="30"><input name="1" type="text" id="1" size="15" onclick="qProduct();"></td>
-			        <td><input name="des1" type="text" id="des1" size="30"></td>
-			        <td><input name="pre1" type="text" id="pre1" size="5" disabled=""></td>
-			        <td><input name="can1" type="text" id="can1" size="5" onfocus="setActualCan();" onfocusout="calculateTotal();"></td>
-			        <td><input name="tot1" type="text" id="tot1" size="10" disabled=""></td>
-			        
-			      </tr>
-			    </table>
+			  	<td colspan="5">
+				    <table id="products" border="0" cellspacing="5" cellpadding="5">
+				    	<tr>
+					        <td height="30"><input name="1" type="text" id="1" size="15" onclick="qProduct();"></td>
+					        <td><input name="des1" type="text" id="des1" size="30"></td>
+					        <td><input name="pre1" type="text" id="pre1" size="5" disabled=""></td>
+					        <td><input name="can1" type="text" id="can1" size="5" onfocus="setActualCan();" onfocusout="calculateTotal();"></td>
+					        <td><input name="tot1" type="text" id="tot1" size="10" disabled="" ></td>
+				        
+				    	</tr>
+				    </table>
 			    </td>
 			  </tr>
 			  <tr>
@@ -146,11 +157,11 @@
 			    <td><input type="button" name="addRow" id="addRow" value="Agregar Producto"></td>
 			  </tr>
 			  <tr>
-			    <td width="107">&nbsp;</td>
-			    <td width="212">&nbsp;</td>
-			    <td width="37">&nbsp;</td>
-			    <td width="37">&nbsp;</td>
-			    <td width="72">&nbsp;</td>
+			    <td>&nbsp;</td>
+			    <td>&nbsp;</td>
+			    <td>&nbsp;</td>
+			    <td>&nbsp;</td>
+			    <td><input id="gTotal" type="text" disabled=""/></td>
 			  </tr>
 			</table>
 	</form>
@@ -158,48 +169,52 @@
 			    		<table>
 			    			<tr>
 			    				<form id="query-client-form" action="query-client.php">
-			    					<input type="text" id="crut" name="crut" />
+			    					<input type="text" name="crut" id="crut" />
 			    					<button>Consultar</button>
 			    				</form>
 			    				<div id="insert-client-div" style="display: none;"><button>Seleccionar Cliente</button></div>
 			    				<div id="query-client-response"></div>
-			    				
+			    				<div id="insert-client-button-div" style="display: none;"><button onclick="insertClient();">Insertar Cliente</button> </div>
 			    			</tr>
 			    			
 			    		</table>
 			    	</div>
 </div><!-- Main end-->
 <script>
+
+
+
 	function apClient(resArrayClient){
 		$("#query-client-response").empty();
 		$("#query-client-response").append(
 			"<table>\
 				<tr>\
-					<td>RUT</td>\
+					<td><strong>RUT: </strong></td>\
 					<td>"+ resArrayClient[0] +"</td>\
 				</tr>\
 				<tr>\
-					<td>RUT</td>\
+					<td><strong>Razón Social: </strong></td>\
 					<td>"+ resArrayClient[1] +"</td>\
 				</tr>\
 				<tr>\
-					<td>RUT</td>\
+					<td><strong>Dirección: </strong></td>\
 					<td>"+ resArrayClient[2] +"</td>\
 				</tr>\
 				<tr>\
-					<td>RUT</td>\
+					<td><strong>Ciudad: </strong></td>\
 					<td>"+ resArrayClient[3] +"</td>\
 				</tr>\
 				<tr>\
-					<td>RUT</td>\
+					<td><strong>Teléfono: </strong></td>\
 					<td>"+ resArrayClient[4] +"</td>\
 				</tr>\
 				<tr>\
-					<td>RUT</td>\
+					<td><strong>Vendedor: </strong></td>\
 					<td>"+ resArrayClient[5] +"</td>\
 				</tr>\
 			</table>"
 		);
+		$("#insert-client-button-div").show();
 	}
 	
 	function errorResponseClient(){
@@ -209,31 +224,56 @@
 	}
 	
 	/////post code
+		var resArrayClient;
+		var resultadoClient;
 		$( "#query-client-form" ).submit(function( event ) {
 		
 		  // Stop form from submitting normally
 		  event.preventDefault();
+		  
 		  // Get some values from elements on the page:
-		  var $form = $( this ),
-		    term = $form.find( "input[name='crut']" ).val(),
-		    url = $form.attr( "action" );
+		  var $form2 = $( this ),
+		    term2 = $( "#crut" ).val(),
+		    url2 = $form2.attr( "action" );
 		 
 		  // Send the data using post
-		  var posting = $.post( url, { crut: term } );
+		  var posting2 = $.post( url2, { crut: term2 } );
 		 
 		  // Put the results in a div
-		  posting.done(function( data ) {
+		  posting2.done(function( data ) {
 		  	
 		  	if (data == "0000") {
 		  		errorResponseClient()
 		  	} else{
-		  		var resultadoClient = data
-		  		var resArrayClient = resultadoClient.split("|")
+		  		resultadoClient = data
+		  		resArrayClient = resultadoClient.split("|")
 		  		apClient(resArrayClient)
 		  	};
 		  });
 		});
 		//////////post code
+	
+		///////Insert code
+			$("#boton").click( insertClient() );
+			function insertClient(){    			
+    			var rut = resArrayClient[0];
+    			var razonSocial = resArrayClient[1];
+    			var direccion = resArrayClient[2];
+    			var ciudad = resArrayClient[3];
+    			var telefono = resArrayClient[4];
+    			var vendedor = resArrayClient[5]
+				$('#rut').val(rut);
+				$('#rs').val(razonSocial);
+				$('#dir').val(direccion);
+				$('#ciudad').val(ciudad);
+				$('#tel').val(telefono);
+				$('#ven').val(vendedor);
+				$('#insert-client-button-div').show();
+				$( "#query-client" ).dialog( "close" );
+			}
+				
+		//////Insert code	
+	
 	</script>
 		<div id="query-product" >
 			<table border="0" cellpadding="5" cellspacing="5">
