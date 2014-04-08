@@ -27,14 +27,17 @@
 					function () {
 						if (next<=100) {
 							next = ++next;
-					  $('#products').append('<tr><td height="30"><input name="'+next+'" type="text" id="'+next+'" size="15" onclick="qProduct();"></td><td><input name="des'+next+'" type="text" id="des'+next+'" size="30"></td><td><input name="pre'+next+'" type="text" id="pre'+next+'" size="5"></td><td><input name="can'+next+'" type="text" id="can'+next+'" size="5" onfocus="setActualCan();" onfocusout="calculateTotal();"></td><td><input name="tot'+next+'" type="text" id="tot'+next+'" size="10" disabled="" onchange="upGTotal();"></td></tr>');
+					  		$('#products').append('<tr><td height="30"><input name="'+next+'" type="text" id="'+next+'" size="15" onclick="qProduct();"></td><td><input name="des'+next+'" type="text" id="des'+next+'" size="30"></td><td><input name="pre'+next+'" type="text" id="pre'+next+'" size="5"></td><td><input name="can'+next+'" type="text" id="can'+next+'" size="5" onfocus="setActualCan();" onfocusout="calculateTotal(), upGTotal();"></td><td><input name="tot'+next+'" type="text" id="tot'+next+'" size="10" disabled="" onchange="upGTotal();"></td></tr>');
 
-						} else{};
-											}
+						} else{
+							alert('Ha agregado el maximo de productos para esta nota');
+						};
+					}
 				);
 				
 			});
 		</script>
+		
 		<script>
 		function qProduct(){
 			actualRow = $(document.activeElement).attr('id');
@@ -51,17 +54,44 @@
 		
 		</script>
 		<script>
-	    	function upGTotal(next){
-	    		var totalFactura = 0;
-	    		for (var i=1; i =< next; i++) {
-	    			
-					totalFactura = totalFactura + $("#tot" + next).val();
+	    	function upGTotal(){
+	    		
+	    		
+	    		var totalFactura = '0';
+	    		for (var i=1; i <= next; i++) {
+				  totalFactura = parseInt(totalFactura) + parseInt($("#tot" + i).val());
+				  $("#gTotal").val(totalFactura);
 				};
-				
-				$("#gTotal").val = totalFactura;
-				
+	    		
 	    	}
 	    </script>
+	    <!-- actual row ID  start -->
+	    <script>
+	    	function aR(){
+	    		aR = $(document.activeElement).attr('id');
+	    		return aR;
+	    	}
+	    	
+	    </script>
+	    
+	    <!-- actual row ID  start -->
+	    
+	    
+	    <!-- Check for duplicated products start-->
+	    <script>
+	    	function checkDup(){
+	    		if (next > 1 ) {
+	    			for (var i=1; i <= next; i++) {
+					  if($('#'+ next).val() == $('#'+ i).val()){
+					  	alert('El producto que esta ingresando ya se encuentra en esta nota. ¿Esta seguro de que desea ingresarlo?');
+					  }
+					};
+	    		};
+	    		
+	    	}
+	    </script>
+	    <!-- Check for duplicated products end-->
+	    
 		<script>
 			var actualRowTotal;
 			function setActualCan(){
@@ -82,7 +112,6 @@
 			    		var precio = $("#pre" + actualRowTotal).val();
 			    		var total = parseInt(cantidad) * parseInt(precio);
 			    		$("#can" + actualRowTotal).change($('#tot' + actualRowTotal).val(total));
-			    		upGTotal(next);
 			    	}
 		    	}
 			
@@ -106,7 +135,7 @@
 
 	<body>
 		<div id="main">
-        <form>
+        <form id="nota">
 			<table border="0" cellspacing="5" cellpadding="5">
 				<tr>
 				    <td colspan="5">
@@ -139,10 +168,10 @@
 			  	<td colspan="5">
 				    <table id="products" border="0" cellspacing="5" cellpadding="5">
 				    	<tr>
-					        <td height="30"><input name="1" type="text" id="1" size="15" onclick="qProduct();"></td>
+					        <td height="30"><input name="1" type="text" id="1" size="15" onclick="qProduct();" onchange=""></td>
 					        <td><input name="des1" type="text" id="des1" size="30"></td>
 					        <td><input name="pre1" type="text" id="pre1" size="5" disabled=""></td>
-					        <td><input name="can1" type="text" id="can1" size="5" onfocus="setActualCan();" onfocusout="calculateTotal();"></td>
+					        <td><input name="can1" type="text" id="can1" size="5" onfocus="setActualCan();" onfocusout="calculateTotal(), upGTotal();"></td>
 					        <td><input name="tot1" type="text" id="tot1" size="10" disabled="" ></td>
 				        
 				    	</tr>
@@ -160,8 +189,8 @@
 			    <td>&nbsp;</td>
 			    <td>&nbsp;</td>
 			    <td>&nbsp;</td>
-			    <td>&nbsp;</td>
-			    <td><input id="gTotal" type="text" disabled=""/></td>
+			    <td></td>
+			    <td>Total Factura<input id="gTotal" type="text" disabled=""/></td>
 			  </tr>
 			</table>
 	</form>
@@ -328,6 +357,7 @@
 										$("#insert-button").hide();
 										$("#product").val("");
 										$( "#query-product" ).dialog( "destroy" );
+										checkDup();
 									}
 						    </script>
 						    
