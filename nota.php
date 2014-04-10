@@ -19,6 +19,7 @@
 		<script src="jquery/jquery-1.11.0.min.js"></script>
 		<script src="jquery/ui/ui/jquery-ui.js"></script>
 		<script type="text/javascript" src="me.js"></script>
+		<script type="text/javascript" src="spin.min.js"></script>
 		<script>
 		var pNumber = 1;
 		var next = pNumber;
@@ -48,36 +49,83 @@
 			  }
 			  return message;
 			}
+			
+			//spiner start
+
+			var opts = {
+			  lines: 13, // The number of lines to draw
+			  length: 40, // The length of each line
+			  width: 6, // The line thickness
+			  radius: 30, // The radius of the inner circle
+			  corners: 1, // Corner roundness (0..1)
+			  rotate: 0, // The rotation offset
+			  direction: 1, // 1: clockwise, -1: counterclockwise
+			  color: '#000', // #rgb or #rrggbb or array of colors
+			  speed: 1.4, // Rounds per second
+			  trail: 22, // Afterglow percentage
+			  shadow: false, // Whether to render a shadow
+			  hwaccel: false, // Whether to use hardware acceleration
+			  className: 'spinner', // The CSS class to assign to the spinner
+			  zIndex: 2e9, // The z-index (defaults to 2000000000)
+			  top: '50%', // Top position relative to parent in px
+			  left: '50%' // Left position relative to parent in px
+			};
+			var target = document.getElementById('foo');
+			var spinner = new Spinner(opts).spin(target);
+			//spiner end
+			
 		</script>		
 	</head>
 
 	<body>
+		<div id="modal" class="modal"></div>
 		<div id="main">
         <form id="nota" action="save.php">
         <script>
+        	
+        	
         	
         	$( "#nota" ).submit(function( event ) {
 
 			  // Stop form from submitting normally
 			  event.preventDefault();
-			  
+			  $('#modal').show();
+			  spinner_div = $('#modal').get(0);
+			  spinner.spin(spinner_div);
 			  // Get some values from elements on the page:
-
+				
 				var $formMain = $( this ),
-			    termMain = $( this ).serialize(),
-				urlMain = $formMain.attr( "action" );
-			 
+			    termMain = $( this ).serialize(),			    
+			    urlMain = saveOrUpdate();
+				//urlMain = $formMain.attr( "action" );
+			 	alert(urlMain);
 			  // Send the data using post
 			  var postingMain = $.post( urlMain, termMain);
 			 
 			  // Put the results in a div
 			  postingMain.done(function( data ) {
-			  	$('#notaID').val(data);
+				
+			  	saveResult = setArray(data);
+			 				 	
+				  	if (saveResult[1] =='1') {
+				  		$('#modal').hide();
+					  	spinner.stop();
+					  	$('#id-nota').val(saveResult[0]);
+					  	alert('La nota ha sido guardada');
+				  	} 
+				  	if (saveResult[1] =='0'){
+				  		$('#modal').hide();
+				  		spinner.stop();
+				  		alert('La nota no ha sido guardada. Intentelo nuevamente');
+				  	};
+			  	
 			  	
 			  });
 			});
+			
+			
         </script>	
-        <input type="hidden" id="id" name="id" value="<?php echo $_POST['id'] ?>"/>
+        
 			<table border="0" cellspacing="5" cellpadding="5">
 				<tr>
 				    <td colspan="5">
@@ -101,10 +149,10 @@
 				    			<td><input type="text" id="ven" name="ven" /></td>			    			
 				    		</tr>
 				    		<tr>
-				    			<td></td>
-				    			<td></td>
+				    			<td>No Nota</td>
+				    			<td><input type="text" id="id-nota" name="id-nota" /></td>
 				    			<td>Fecha</td>
-				    			<td><input type="text" id="fecha" name="fecha" /></td>			    			
+				    			<td><input type="text" id="fecha" name="fecha" value="<?php echo date('Y-m-d'); ?>"/></td>			    			
 				    		</tr>
 				    	</table>
 					</td>
@@ -138,7 +186,7 @@
 			    <td>Total Factura<input id="gTotal" name="gTotal"type="text" onchange="upGTotal();"/></td>
 			  </tr>
 			  <tr>
-			  		<td><button onclick="save()">GUARDAR</button></td>
+			  		<td><button id="save_btn">GUARDAR</button></td>
 			  </tr>
 			</table>
 	</form>
@@ -146,7 +194,7 @@
 			    		<table>
 			    			<tr>
 			    				<form id="query-client-form" action="query-client.php">
-			    					<input type="text" name="crut" id="crut" />
+			    					<input type="text" name="crut" id="crut" value="76071530-1"/>
 			    					<button>Consultar</button>
 			    				</form>
 			    				<div id="insert-client-div" style="display: none;"><button>Seleccionar Cliente</button></div>
@@ -199,10 +247,9 @@
 var resArrayClient;
 var resultadoClient;
 $( "#query-client-form" ).submit(function( event ) {
-
+	
   // Stop form from submitting normally
   event.preventDefault();
-  
   // Get some values from elements on the page:
   var $form2 = $( this ),
     term2 = $( "#crut" ).val(),
@@ -260,4 +307,7 @@ url = $form.attr( "action" );
   });
 });
 </script>
+<div>
+	<button id="b" onclick="varVal();">-------</button>
+</div>
 	</body>

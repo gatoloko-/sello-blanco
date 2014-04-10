@@ -258,3 +258,25 @@ function ap (resArray){ //function appends result to content
 			$("#insert-button").hide();
 			$("#optional-products-container").empty();
 		}
+		
+
+		function setArray(myString){
+			var myArray = new Array;
+			myArray = myString.split("|");
+			return myArray;
+		}
+		function varVal(){
+			alert($('#id-nota').val());
+			
+		}
+		function saveOrUpdate(){
+			var urlMain = '';
+			
+			if (typeof $('#id-nota').val() === 'undefined' || $('#id-nota').val() == '') {
+			    	urlMain = 'save.php';
+			} else{
+			    	urlMain = 'update.php';
+			    };
+			    
+			    return urlMain;
+		}

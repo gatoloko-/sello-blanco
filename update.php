@@ -1,5 +1,6 @@
 <?php
 
+
 for ($i=1; $i <= 100 ; $i++) {
 	
 	//------------------------*****
@@ -103,30 +104,15 @@ for ($i=1; $i <= 100 ; $i++) {
 }
 
 $total = $_POST['gTotal'];
-$fecha = $_POST['fecha'];
 $estado = 0;
-$vendedor = $_POST['ven'];
-$cliente = $_POST['rut'];
 $nota = $_POST['nota'];
-$cNota = date('d-m-Y').'-'.randSt(5);
+$cNota = $_POST['id-nota'];
 
 
-
-
-function randSt( $length ) {
-	$word = "";
-	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";	
-	for ($i=1; $i <=  $length; $i++) {
-		$letra = substr($chars, rand(0, strlen($chars)), 1);
-		$word = $word.$letra;
-	}
-	return $word;
-}
-
-
-function save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fecha, $estado, $vendedor, $cliente, $nota, $cNota){
+function update($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $nota, $cNota){
+	$estado_ = 0;
 	include 'conx/conx.php';
-	if($ordenSave = $conx->query('CALL saveOrder("'.$codigo.'", "'.$descripcion.'", "'.$precio.'", "'.$subtotal.'", "'.$total.'", "'.$estado.'", "'.$vendedor.'", "'.$cliente.'", "'.$cantidad.'", "'.$cNota.'", "'.$fecha.'", "'.$nota.'")')){
+	if($ordenUpdate = $conx->query('CALL upOrder("'.$codigo.'", "'.$descripcion.'", "'.$precio.'", "'.$cantidad.'", "'.$subtotal.'", "'.$total.'", "'.$estado_.'", "'.$nota.'", "'.$cNota.'")')){
 		return TRUE;
 	}else{
 		return FALSE;
@@ -134,15 +120,10 @@ function save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fec
 	
 }
 
-
-
-		
-if(save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fecha, $estado, $vendedor, $cliente, $nota, $cNota)){
+if(update($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $nota, $cNota)){
 	echo $cNota.'|1';
 }else{
 	echo $cNota.'|0';
 }
-	
-
 
 ?>
