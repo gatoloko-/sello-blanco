@@ -44,13 +44,17 @@
 	    /* Check for duplicated products start*/
 	    
 	    	function checkDup(){
+	    		var siHayDuplicados = 0;
 	    		if (next > 1 ) {
-	    			for (var i=1; i <= next; i++) {
+	    			for (var i=1; i <= next-1; i++) {
 					  if($('#'+ next).val() == $('#'+ i).val()){
-					  	alert('El producto que esta ingresando ya se encuentra en esta nota. ¿Esta seguro de que desea ingresarlo?');
+					  		siHayDuplicados = 1;
 					  }
 					};
 	    		};
+	    		if(siHayDuplicados == 1){
+	    			alert('El producto que esta ingresando ya se encuentra en esta nota. ¿Esta seguro de que desea ingresarlo?');
+	    		}
 	    		
 	    	}
 	    
@@ -163,7 +167,6 @@ function insertProduct (){
 				$("#insert-button").hide();
 				$("#product").val("");
 				$( "#query-product" ).dialog( "destroy" );
-				checkDup();
 			}
 			
 function ap (resArray){ //function appends result to content

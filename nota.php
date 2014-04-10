@@ -81,50 +81,47 @@
 		<div id="modal" class="modal"></div>
 		<div id="main">
         <form id="nota" action="save.php">
-        <script>
+<script>     	   	
         	
-        	
-        	
-        	$( "#nota" ).submit(function( event ) {
+$( "#nota" ).submit(function( event ) {
 
-			  // Stop form from submitting normally
-			  event.preventDefault();
-			  $('#modal').show();
-			  spinner_div = $('#modal').get(0);
-			  spinner.spin(spinner_div);
-			  // Get some values from elements on the page:
-				
-				var $formMain = $( this ),
-			    termMain = $( this ).serialize(),			    
-			    urlMain = saveOrUpdate();
-				//urlMain = $formMain.attr( "action" );
-			 	alert(urlMain);
-			  // Send the data using post
-			  var postingMain = $.post( urlMain, termMain);
-			 
-			  // Put the results in a div
-			  postingMain.done(function( data ) {
-				
-			  	saveResult = setArray(data);
-			 				 	
-				  	if (saveResult[1] =='1') {
-				  		$('#modal').hide();
-					  	spinner.stop();
-					  	$('#id-nota').val(saveResult[0]);
-					  	alert('La nota ha sido guardada');
-				  	} 
-				  	if (saveResult[1] =='0'){
-				  		$('#modal').hide();
-				  		spinner.stop();
-				  		alert('La nota no ha sido guardada. Intentelo nuevamente');
-				  	};
-			  	
-			  	
-			  });
-			});
-			
-			
-        </script>	
+  // Stop form from submitting normally
+event.preventDefault();
+$('#modal').show();
+spinner_div = $('#modal').get(0);
+spinner.spin(spinner_div);
+  // Get some values from elements on the page:
+	
+var $formMain = $( this ),
+termMain = $( this ).serialize(),			    
+urlMain = saveOrUpdate();
+//urlMain = $formMain.attr( "action" );
+checkDup();
+alert(urlMain);
+  // Send the data using post
+var postingMain = $.post( urlMain, termMain);
+ 
+  // Put the results in a div
+postingMain.done(function( data ) {
+	
+saveResult = setArray(data);
+ 				 	
+if (saveResult[1] =='1') {
+$('#modal').hide();
+spinner.stop();
+$('#id-nota').val(saveResult[0]);
+alert('La nota ha sido guardada');
+} 
+if (saveResult[1] =='0'){
+$('#modal').hide();
+spinner.stop();
+alert('La nota no ha sido guardada. Intentelo nuevamente');
+	  	};
+  	
+  	
+  });
+});
+ </script>	
         
 			<table border="0" cellspacing="5" cellpadding="5">
 				<tr>
