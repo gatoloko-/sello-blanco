@@ -21,7 +21,7 @@ $data = qClient($rut);//si producto esta con stock 0
 		echo utf8_encode($value)."|";
 	}
 	} else {
-		echo utf8_encode("0000");
+		echo utf8_encode("0000");//devuelve 0000 si no hay coincidencias
 	}
 	
 	

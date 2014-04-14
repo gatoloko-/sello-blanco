@@ -1,3 +1,25 @@
+<?php
+
+
+function qClient($rut){
+	
+	include_once 'conx/conx.php';
+	$producto = $conx->query('CALL qClient("'.$rut.'")');//consulta
+	$resultado = $producto->fetch_array(MYSQLI_ASSOC);	
+	return $resultado;
+		
+	}
+
+
+if (isset($_POST['id-nota'])) {
+	$idNota = $_POST['id-nota'];
+	$cliente = qClient($rut);
+} else {
+	
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -129,27 +151,27 @@ alert('La nota no ha sido guardada. Intentelo nuevamente');
 				    	<table>
 				    		<tr>
 				    			<td>R.U.T.</td>
-				    			<td><input type="text" id="rut" name="rut" onclick="qClient();"/></td>
+				    			<td><input type="text" id="rut" name="rut" onclick="qClient();" value="<?php if(isset($cliente['rut'])){echo $cliente['rut'];} ?>"/></td>
 				    			<td>Razón Social</td>
-				    			<td><input type="text" id="rs" name="rs" /></td>			    			
+				    			<td><input type="text" id="rs" name="rs" value="<?php if(isset($cliente['rs'])){echo $cliente['rs'];} ?>"/></td>			    			
 				    		</tr>
 				    		<tr>
 				    			<td>Dirección</td>
-				    			<td><input type="text" id="dir" name="dir" /></td>
+				    			<td><input type="text" id="dir" name="dir" value="<?php if(isset($cliente['direccion'])){echo $cliente['direccion'];} ?>"/></td>
 				    			<td>Ciudad</td>
-				    			<td><input type="text" id="ciudad" name="ciudad" /></td>			    			
+				    			<td><input type="text" id="ciudad" name="ciudad" value="<?php if(isset($cliente['ciudad'])){echo $cliente['ciudad'];} ?>"/></td>			    			
 				    		</tr>
 				    		<tr>
 				    			<td>Teléfono</td>
 				    			<td><input type="text" id="tel" name="tel" /></td>
 				    			<td>Vendedor</td>
-				    			<td><input type="text" id="ven" name="ven" /></td>			    			
+				    			<td><input type="text" id="ven" name="ven" value="<?php if(isset($cliente['telefono'])){echo $cliente['telefono'];} ?>"/></td>			    			
 				    		</tr>
 				    		<tr>
 				    			<td>No Nota</td>
-				    			<td><input type="text" id="id-nota" name="id-nota" /></td>
+				    			<td><input type="text" id="id-nota" name="id-nota" value="<?php if(isset($_POST['id-nota'])){echo $nota['cNota'];} ?>"/></td>
 				    			<td>Fecha</td>
-				    			<td><input type="text" id="fecha" name="fecha" value="<?php echo date('Y-m-d'); ?>"/></td>			    			
+				    			<td><input type="text" id="fecha" name="fecha" value="<?php <?php if(isset($_POST['id-nota'])){echo $nota['fecha'];}else{echo date('Y-m-d');} ?>"/></td>			    			
 				    		</tr>
 				    	</table>
 					</td>
