@@ -15,7 +15,11 @@
 			$( "#query-client" ).dialog( "open" );
 			
 		}
-		
+		function clientManager(){
+			$( "#client-modal" ).dialog({ autoOpen: false, width: 800, modal: true, position: { my: "center top", at: "center top", of: window } });
+			$( "#client-modal" ).dialog( "open" );
+			
+		}
 		
 		
 	    	function upGTotal(){
@@ -137,13 +141,13 @@ function apClient(resArrayClient){
     			var direccion = resArrayClient[2];
     			var ciudad = resArrayClient[3];
     			var telefono = resArrayClient[4];
-    			var vendedor = resArrayClient[5]
+    			var vendedor = resArrayClient[5];
 				$('#rut').val(rut);
 				$('#rs').val(razonSocial);
 				$('#dir').val(direccion);
 				$('#ciudad').val(ciudad);
 				$('#tel').val(telefono);
-				$('#ven').val(vendedor);
+				
 				$('#insert-client-button-div').show();
 				$( "#query-client" ).dialog( "close" );
 			}

@@ -14,7 +14,7 @@ for ($i=1; $i <= 100 ; $i++) {
 	
 	}else{
 		if($i == 100){
-			$codigo = $codigo;
+			$codigo = $codigo.'|';
 		}else{
 			$codigo = $codigo.'|';
 		}
@@ -33,7 +33,7 @@ for ($i=1; $i <= 100 ; $i++) {
 		}
 	}else{
 		if($i == 100){
-			$descripcion = $descripcion;
+			$descripcion = $descripcion.'|';
 		}else{
 			$descripcion = $descripcion.'|';
 		}
@@ -52,7 +52,7 @@ for ($i=1; $i <= 100 ; $i++) {
 		}
 	}else{
 		if($i == 100){
-			$precio = $precio;
+			$precio = $precio.'|';
 		}else{
 			$precio = $precio.'|';
 		}
@@ -72,7 +72,7 @@ for ($i=1; $i <= 100 ; $i++) {
 
 	}else{
 		if($i == 100){
-			$cantidad = $cantidad;
+			$cantidad = $cantidad.'|';
 		}else{
 			$cantidad = $cantidad.'|';
 		}
@@ -92,7 +92,7 @@ for ($i=1; $i <= 100 ; $i++) {
 		
 	}else{
 		if($i == 100){
-			$subtotal = $subtotal;
+			$subtotal = $subtotal.'|';
 		}else{
 			$subtotal = $subtotal.'|';
 		}
@@ -109,7 +109,8 @@ $vendedor = $_POST['ven'];
 $cliente = $_POST['rut'];
 $nota = $_POST['nota'];
 $cNota = date('d-m-Y').'-'.randSt(5);
-
+$pago = $_POST['pago'];
+$trans = $_POST['trans'];
 
 
 
@@ -124,9 +125,9 @@ function randSt( $length ) {
 }
 
 
-function save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fecha, $estado, $vendedor, $cliente, $nota, $cNota){
+function save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fecha, $estado, $vendedor, $cliente, $nota, $cNota, $pago, $trans){
 	include 'conx/conx.php';
-	if($ordenSave = $conx->query('CALL saveOrder("'.$codigo.'", "'.$descripcion.'", "'.$precio.'", "'.$subtotal.'", "'.$total.'", "'.$estado.'", "'.$vendedor.'", "'.$cliente.'", "'.$cantidad.'", "'.$cNota.'", "'.$fecha.'", "'.$nota.'")')){
+	if($ordenSave = $conx->query('CALL saveOrder("'.$codigo.'", "'.$descripcion.'", "'.$precio.'", "'.$subtotal.'", "'.$total.'", "'.$estado.'", "'.$vendedor.'", "'.$cliente.'", "'.$cantidad.'", "'.$cNota.'", "'.$fecha.'", "'.$nota.'", "'.$pago.'", "'.$trans.'")')){
 		return TRUE;
 	}else{
 		return FALSE;
@@ -137,7 +138,7 @@ function save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fec
 
 
 		
-if(save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fecha, $estado, $vendedor, $cliente, $nota, $cNota)){
+if(save($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $fecha, $estado, $vendedor, $cliente, $nota, $cNota, $pago, $trans)){
 	echo $cNota.'|1';
 }else{
 	echo $cNota.'|0';

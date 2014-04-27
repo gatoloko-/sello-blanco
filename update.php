@@ -15,7 +15,7 @@ for ($i=1; $i <= 100 ; $i++) {
 	
 	}else{
 		if($i == 100){
-			$codigo = $codigo;
+			$codigo = $codigo.'|';
 		}else{
 			$codigo = $codigo.'|';
 		}
@@ -34,7 +34,7 @@ for ($i=1; $i <= 100 ; $i++) {
 		}
 	}else{
 		if($i == 100){
-			$descripcion = $descripcion;
+			$descripcion = $descripcion.'|';
 		}else{
 			$descripcion = $descripcion.'|';
 		}
@@ -53,7 +53,7 @@ for ($i=1; $i <= 100 ; $i++) {
 		}
 	}else{
 		if($i == 100){
-			$precio = $precio;
+			$precio = $precio.'|';
 		}else{
 			$precio = $precio.'|';
 		}
@@ -73,7 +73,7 @@ for ($i=1; $i <= 100 ; $i++) {
 
 	}else{
 		if($i == 100){
-			$cantidad = $cantidad;
+			$cantidad = $cantidad.'|';
 		}else{
 			$cantidad = $cantidad.'|';
 		}
@@ -93,7 +93,7 @@ for ($i=1; $i <= 100 ; $i++) {
 		
 	}else{
 		if($i == 100){
-			$subtotal = $subtotal;
+			$subtotal = $subtotal.'|';
 		}else{
 			$subtotal = $subtotal.'|';
 		}
@@ -103,16 +103,18 @@ for ($i=1; $i <= 100 ; $i++) {
 	
 }
 
+
 $total = $_POST['gTotal'];
 $estado = 0;
 $nota = $_POST['nota'];
 $cNota = $_POST['id-nota'];
+$pago = $_POST['pago'];
+$trans = $_POST['trans'];
 
-
-function update($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $nota, $cNota){
+function update($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $nota, $cNota, $pago, $trans){
 	$estado_ = 0;
 	include 'conx/conx.php';
-	if($ordenUpdate = $conx->query('CALL upOrder("'.$codigo.'", "'.$descripcion.'", "'.$precio.'", "'.$cantidad.'", "'.$subtotal.'", "'.$total.'", "'.$estado_.'", "'.$nota.'", "'.$cNota.'")')){
+	if($ordenUpdate = $conx->query('CALL upOrder("'.$codigo.'", "'.$descripcion.'", "'.$precio.'", "'.$cantidad.'", "'.$subtotal.'", "'.$total.'", "'.$estado_.'", "'.$nota.'", "'.$cNota.'", "'.$pago.'", "'.$trans.'")')){
 		return TRUE;
 	}else{
 		return FALSE;
@@ -120,7 +122,7 @@ function update($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $n
 	
 }
 
-if(update($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $nota, $cNota)){
+if(update($codigo, $descripcion, $precio, $cantidad, $subtotal, $total, $nota, $cNota, $pago, $trans)){
 	echo $cNota.'|1';
 }else{
 	echo $cNota.'|0';

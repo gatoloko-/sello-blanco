@@ -1,23 +1,98 @@
 <?php
+if (!isset($_SESSION)) {
+  session_start();
+}
+$MM_authorizedUsers = "vendedor,admin";
+$MM_donotCheckaccess = "false";
+
+// *** Restrict Access To Page: Grant or deny access to this page
+function isAuthorized($strUsers, $strGroups, $UserName, $UserGroup) { 
+  // For security, start by assuming the visitor is NOT authorized. 
+  $isValid = False; 
+
+  // When a visitor has logged into this site, the Session variable MM_Username set equal to their username. 
+  // Therefore, we know that a user is NOT logged in if that Session variable is blank. 
+  if (!empty($UserName)) { 
+    // Besides being logged in, you may restrict access to only certain users based on an ID established when they login. 
+    // Parse the strings into arrays. 
+    $arrUsers = Explode(",", $strUsers); 
+    $arrGroups = Explode(",", $strGroups); 
+    if (in_array($UserName, $arrUsers)) { 
+      $isValid = true; 
+    } 
+    // Or, you may restrict access to only certain users based on their username. 
+    if (in_array($UserGroup, $arrGroups)) { 
+      $isValid = true; 
+    } 
+    if (($strUsers == "") && false) { 
+      $isValid = true; 
+    } 
+  } 
+  return $isValid; 
+}
+
+$MM_restrictGoTo = "log.php";
+if (!((isset($_SESSION['MM_Username'])) && (isAuthorized("",$MM_authorizedUsers, $_SESSION['MM_Username'], $_SESSION['MM_UserGroup'])))) {   
+  $MM_qsChar = "?";
+  $MM_referrer = $_SERVER['PHP_SELF'];
+  if (strpos($MM_restrictGoTo, "?")) $MM_qsChar = "&";
+  if (isset($_SERVER['QUERY_STRING']) && strlen($_SERVER['QUERY_STRING']) > 0) 
+  $MM_referrer .= "?" . $_SERVER['QUERY_STRING'];
+  $MM_restrictGoTo = $MM_restrictGoTo. $MM_qsChar . "accesscheck=" . urlencode($MM_referrer);
+  header("Location: ". $MM_restrictGoTo); 
+  exit;
+}
+?>
+<?php
 
 
 function qClient($rut){
 	
-	include_once 'conx/conx.php';
+	include 'conx/conx.php';
 	$producto = $conx->query('CALL qClient("'.$rut.'")');//consulta
 	$resultado = $producto->fetch_array(MYSQLI_ASSOC);	
 	return $resultado;
 		
 	}
 
+function queryActualOrder($idNota){
+	include_once 'conx/conx.php';
+	$actualOrder = $conx->query('CALL qOrder("'.$idNota.'")');//consulta
+	$resultado = $actualOrder->fetch_array(MYSQLI_ASSOC);	
+	return $resultado;
+}
+function countProducts($array){
+	$count = 0;
+	for ($i=0; $i <= 99; $i++) {
+		if ($array[$i]!="") {
+			$count++;
+		} 
+		
+	}
+		return $count;
+}
 
-if (isset($_POST['id-nota'])) {
-	$idNota = $_POST['id-nota'];
+
+if (isset($_GET['id-nota'])) {
+	$idNota = $_GET['id-nota'];
+	$nota = queryActualOrder($idNota);
+	$rut = $nota['cliente'];
 	$cliente = qClient($rut);
-} else {
+	$arrayForCount = explode('|', $nota['codigo']);
+	$cuentaCodigos = countProducts($arrayForCount);
+	$codigos = explode('|', $nota['codigo']);
+	$descripciones = explode('|', $nota['descripcion']);
+	$precios = explode('|', $nota['precio']);
+	$cantidades = explode('|', $nota['cantidad']);
+	$subtotales = explode('|', $nota['subtotal']);
 	
 }
 
+
+
+
+include 'embed.php';
+include 'nav-bar.php';
 ?>
 
 <!DOCTYPE html>
@@ -32,18 +107,21 @@ if (isset($_POST['id-nota'])) {
 		<title>HTML</title>
 		<meta name="description" content="">
 		<meta name="author" content="gatoloko">
-
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-		<link rel="stylesheet" href="jquery/ui/themes/base/jquery-ui.css" type="text/css" />
-		<link rel="stylesheet" href="css/styles.css" type="text/css" />
-		<script src="jquery/jquery-1.11.0.min.js"></script>
-		<script src="jquery/ui/ui/jquery-ui.js"></script>
-		<script type="text/javascript" src="me.js"></script>
-		<script type="text/javascript" src="spin.min.js"></script>
+		<?php embed(); ?>
 		<script>
-		var pNumber = 1;
+		var pNumber = <?php if(isset($_GET['id-nota'])){
+								if($cuentaCodigos == 0){
+									echo "1";
+								}else{
+									echo $cuentaCodigos;
+								}
+							}else{
+								echo "1";
+							} ?>;
 		var next = pNumber;
 		
 			$(document).ready(function(){
@@ -100,6 +178,7 @@ if (isset($_POST['id-nota'])) {
 	</head>
 
 	<body>
+		<?php barra(); ?>
 		<div id="modal" class="modal"></div>
 		<div id="main">
         <form id="nota" action="save.php">
@@ -145,7 +224,7 @@ alert('La nota no ha sido guardada. Intentelo nuevamente');
 });
  </script>	
         
-			<table border="0" cellspacing="5" cellpadding="5">
+			<table border="0" cellspacing="5" cellpadding="5" class="CSSTableGenerator">
 				<tr>
 				    <td colspan="5">
 				    	<table>
@@ -163,15 +242,21 @@ alert('La nota no ha sido guardada. Intentelo nuevamente');
 				    		</tr>
 				    		<tr>
 				    			<td>Teléfono</td>
-				    			<td><input type="text" id="tel" name="tel" /></td>
+				    			<td><input type="text" id="tel" name="tel" value="<?php if(isset($cliente['telefono'])){echo $cliente['telefono'];} ?>"/></td>
 				    			<td>Vendedor</td>
-				    			<td><input type="text" id="ven" name="ven" value="<?php if(isset($cliente['telefono'])){echo $cliente['telefono'];} ?>"/></td>			    			
+				    			<td><input type="text" id="ven" name="ven" value="<?php echo $_SESSION['MM_Username']; ?>" <?php if($_SESSION['MM_UserGroup']== "vendedor"){echo 'readonly=""';}?>/></td>			    			
 				    		</tr>
 				    		<tr>
 				    			<td>No Nota</td>
-				    			<td><input type="text" id="id-nota" name="id-nota" value="<?php if(isset($_POST['id-nota'])){echo $nota['cNota'];} ?>"/></td>
+				    			<td><input type="text" id="id-nota" name="id-nota" readonly value="<?php if(isset($_GET['id-nota'])){echo $nota['cNota'];} ?>"/></td>
 				    			<td>Fecha</td>
-				    			<td><input type="text" id="fecha" name="fecha" value="<?php <?php if(isset($_POST['id-nota'])){echo $nota['fecha'];}else{echo date('Y-m-d');} ?>"/></td>			    			
+				    			<td><input type="text" id="fecha" name="fecha" value="<?php if(isset($nota['fecha'])){echo $nota['fecha'];}else{echo date('Y-m-d');} ?>"/></td>			    			
+				    		</tr>
+				    		<tr>
+				    			<td>Pago</td>
+				    			<td><input type="text" id="pago" name="pago" value="<?php if(isset($nota['pago'])){echo $nota['pago'];} ?>"/></td>
+				    			<td>Transporte</td>
+				    			<td><input type="text" id="trans" name="trans" value="<?php if(isset($nota['transporte'])){echo $nota['transporte'];} ?>"/></td>			    			
 				    		</tr>
 				    	</table>
 					</td>
@@ -183,13 +268,52 @@ alert('La nota no ha sido guardada. Intentelo nuevamente');
 			  	<td colspan="5">
 				    <table id="products" border="0" cellspacing="5" cellpadding="5">
 				    	<tr>
-					        <td height="30"><input name="1" type="text" id="1" size="15" onclick="qProduct();" onchange=""></td>
-					        <td><input name="des1" type="text" id="des1" size="30"></td>
-					        <td><input name="pre1" type="text" id="pre1" size="5" readonly=""></td>
-					        <td><input name="can1" type="text" id="can1" size="5" onfocus="setActualCan();" onfocusout="calculateTotal(), upGTotal();"></td>
-					        <td><input name="tot1" type="text" id="tot1" size="10" readonly="" ></td>
-				        
+				    		<td>Código</td>
+				    		<td>Descripción</td>
+				    		<td>Precio</td>
+				    		<td>Cantidad</td>
+				    		<td>Subtotal</td>
 				    	</tr>
+				    	<?php
+				    	if (isset($_GET['id-nota'])) {
+				    		if ($cuentaCodigos > 0) {
+								for ($i=1; $i <= $cuentaCodigos ; $i++) {
+									 
+								echo '<tr>
+								        <td height="30"><input name="'.$i.'" type="text" id="'.$i.'" size="15" onclick="qProduct();" onchange="" value="'.$codigos[$i-1].'"></td>
+								        <td><input name="des'.$i.'" type="text" id="des'.$i.'" size="30" value="'.$descripciones[$i-1].'"></td>
+								        <td><input name="pre'.$i.'" type="text" id="pre'.$i.'" size="5" readonly="" value="'.$precios[$i-1].'"></td>
+								        <td><input name="can'.$i.'" type="text" id="can'.$i.'" size="5" onfocus="setActualCan();" onfocusout="calculateTotal(), upGTotal();" value="'.$cantidades[$i-1].'"></td>
+								        <td><input name="tot'.$i.'" type="text" id="tot'.$i.'" size="10" readonly="" value="'.$subtotales[$i-1].'"></td>
+							        
+							    	</tr>';
+								}
+							} else {
+								echo '<tr>
+							        <td height="30"><input name="1" type="text" id="1" size="15" onclick="qProduct();" onchange=""></td>
+							        <td><input name="des1" type="text" id="des1" size="30"></td>
+							        <td><input name="pre1" type="text" id="pre1" size="5" readonly></td>
+							        <td><input name="can1" type="text" id="can1" size="5" onfocus="setActualCan();" onfocusout="calculateTotal(), upGTotal();"></td>
+							        <td><input name="tot1" type="text" id="tot1" size="10" readonly ></td>
+						        
+						    	</tr>';
+							}
+							
+							
+							
+						} else{
+							
+							
+						echo '<tr>
+							        <td height="30"><input name="1" type="text" id="1" size="15" onclick="qProduct();" onchange=""></td>
+							        <td><input name="des1" type="text" id="des1" size="30"></td>
+							        <td><input name="pre1" type="text" id="pre1" size="5" readonly></td>
+							        <td><input name="can1" type="text" id="can1" size="5" onfocus="setActualCan();" onfocusout="calculateTotal(), upGTotal();"></td>
+							        <td><input name="tot1" type="text" id="tot1" size="10" readonly ></td>
+						        
+						    	</tr>';
+						}
+				    	?>
 				    </table>
 			    </td>
 			  </tr>
@@ -201,8 +325,8 @@ alert('La nota no ha sido guardada. Intentelo nuevamente');
 			    <td><input type="button" name="addRow" id="addRow" value="Agregar Producto"></td>
 			  </tr>
 			  <tr>
-			    <td colspan="4"><textarea id="nota" cols="50" name="nota" placeholder="Espacio para notas"/></textarea></td>
-			    <td>Total Factura<input id="gTotal" name="gTotal"type="text" onchange="upGTotal();"/></td>
+			    <td colspan="4"><textarea id="nota" cols="50" name="nota" placeholder="Espacio para notas"/><?php if (isset($_GET['id-nota'])) {echo $nota['nota'];} ?></textarea></td>
+			    <td>Total Factura<input id="gTotal" name="gTotal"type="text" onchange="upGTotal();"/></td><?php if (isset($_GET['id-nota'])) {echo "<script>upGTotal();</script>";} ?>
 			  </tr>
 			  <tr>
 			  		<td><button id="save_btn">GUARDAR</button></td>
@@ -329,4 +453,5 @@ url = $form.attr( "action" );
 <div>
 	<button id="b" onclick="varVal();">-------</button>
 </div>
+<?php echo $cuentaCodigos ?>
 	</body>
